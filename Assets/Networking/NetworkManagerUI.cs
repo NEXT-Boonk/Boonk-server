@@ -10,6 +10,7 @@ public class NetworkManagerUI : MonoBehaviour
     [SerializeField]private Button Server;
     [SerializeField]private Button Host;
     [SerializeField]private Button Client;
+    [SerializeField]private InputField Ip;
 
     private void Awake(){
 
