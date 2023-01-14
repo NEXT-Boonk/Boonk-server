@@ -29,13 +29,10 @@ public class CustomValidator : TMPro.TMP_InputValidator
         if (char.IsNumber(ch))
         {
             // Insert the character at the given position if we're working in the Unity Editor
-#if UNITY_EDITOR
             text = text.Insert(pos, ch.ToString());
-#endif
             // Increment the insertion point by 1
             pos++;
             return ch;
-            
         }
         else if(text.EndsWith(ch1))
         {
@@ -44,9 +41,9 @@ public class CustomValidator : TMPro.TMP_InputValidator
         else
         if(ch.CompareTo(ch1) == 0){
         // Insert the character at the given position if we're working in the Unity Editor
-#if UNITY_EDITOR
+
             text = text.Insert(pos, ch.ToString());
-#endif
+
             // Increment the insertion point by 1
             pos++;
             return ch;
