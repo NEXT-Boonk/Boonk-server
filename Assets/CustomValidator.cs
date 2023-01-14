@@ -24,7 +24,7 @@ public class CustomValidator : TMPro.TMP_InputValidator
     /// <returns>Return the character you'd allow into </returns>
     public override char Validate(ref string text, ref int pos, char ch)
     {
-        Debug.Log($"Text = {text}; pos = {pos}; chr = {ch}");
+        //Debug.Log($"Text = {text}; pos = {pos}; chr = {ch}");
         // If the typed character is a number, insert it into the text argument at the text insertion position (pos argument)
         if (char.IsNumber(ch))
         {
