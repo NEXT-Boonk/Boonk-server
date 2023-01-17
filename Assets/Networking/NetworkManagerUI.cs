@@ -5,12 +5,15 @@ using UnityEngine.UI;
 using Unity.Netcode;
 
 
+
 public class NetworkManagerUI : MonoBehaviour
 {
     [SerializeField]private Button Server;
     [SerializeField]private Button Host;
     [SerializeField]private Button Client;
-   
+    [SerializeField]private Button Disconnect;
+    
+    //UnityTransport UT;
 
     private void Awake(){
 
@@ -22,6 +25,9 @@ public class NetworkManagerUI : MonoBehaviour
         });
         Client.onClick.AddListener(() => {
             NetworkManager.Singleton.StartClient();
+        });
+        Disconnect.onClick.AddListener(() => {
+           NetworkManager.Singleton.Shutdown();
         });
 
       
