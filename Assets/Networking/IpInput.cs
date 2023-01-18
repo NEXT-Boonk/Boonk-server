@@ -39,14 +39,25 @@ public class IpInput : MonoBehaviour
     void Update()
     {
 
-        UT.ConnectionData.Address = Ip.text;
-        if(Port.text.Length > 0 && Port.text.Length <= 4){
-        UT.ConnectionData.Port = UInt16.Parse(Port.text);
+        
+        
        }
+       
        // UT.ConnectionData.Port = Port.text;
       //if (Input.GetKey(KeyCode.G)) UT.connectionData.Address = "10.78.64.202";
         
-    }
+    
 
-   
+    public void InputIp(){
+
+        UT.ConnectionData.Address = Ip.text;
+        
+    }
+    
+    public void InputPort(){
+    if(Port.text.Length > 0 && Port.text.Length <= 4){
+        UT.ConnectionData.Port = UInt16.Parse(Port.text);
+
+    }
+}
 }

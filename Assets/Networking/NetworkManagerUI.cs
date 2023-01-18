@@ -27,6 +27,9 @@ public class NetworkManagerUI : MonoBehaviour
 
     private void Awake(){
         
+        UT = FindObjectOfType<UnityTransport>();
+        //UT.ConnectionData.Address = "127.0.0.1";
+        
         var interfaces = NetworkInterface.GetAllNetworkInterfaces();
             foreach (var adapter in interfaces.Where(x => x.OperationalStatus == OperationalStatus.Up))
             {
@@ -39,11 +42,13 @@ public class NetworkManagerUI : MonoBehaviour
                        
                         ip = result.Address.ToString();
                         Debug.Log("IP Address:" + ip);
+                        
 
                     }
                 }
             }
     
+        //UT.ConnectionData.Address = ip;
 
         string[] args = System.Environment.GetCommandLineArgs();
         for(int i = 0; i < args.Length; i++) {
