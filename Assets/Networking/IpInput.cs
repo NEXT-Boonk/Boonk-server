@@ -17,8 +17,6 @@ public class IpInput : MonoBehaviour
     [SerializeField]private TMP_InputField Port;
     private string Input;
     UnityTransport UT;
-    TMP_InputField Ip1;
-    TMP_InputField Port1;
     
 
     // Start is called before the first frame update
