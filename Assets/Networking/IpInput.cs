@@ -23,7 +23,7 @@ public class IpInput : MonoBehaviour
     void Awake()
     {
         UT = GetComponent<UnityTransport>();
-        Port.characterLimit = 4;
+        Port.characterLimit = 5;
         Port.contentType = TMP_InputField.ContentType.IntegerNumber;
         Port.characterValidation = TMP_InputField.CharacterValidation.Alphanumeric;
         

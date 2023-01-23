@@ -56,9 +56,12 @@ public class NetworkManagerUI : MonoBehaviour
                 NetworkManager.Singleton.StartClient();
             }
             else if(args[i] == "-launch-as-server"){
+                UT.ConnectionData.Port = UInt16.Parse("60000");
                 UT.ConnectionData.Address = ip;
+                //UT.ConnectionData.port = "0";
                 NetworkManager.Singleton.StartServer();
             }
+            
             
         }
 
@@ -78,9 +81,6 @@ public class NetworkManagerUI : MonoBehaviour
       
     }
 
-    void Update() {
-            
-      
-    }
+    
 
 }
