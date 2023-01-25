@@ -11,10 +11,14 @@ public class PlayerNetwork : NetworkBehaviour
 
 
 //Dette er en struct, den minder om en class, men er det ikke
-    public struct MyCustomData {
+    public struct MyCustomData: INetworkSerializable {
         public int _int;
         public bool _bool;
 
+        public void NetworkSerialize<T>(BufferSerializer<T>serializer) where T : IReaderWriter {
+            serializer.SerializeValue(ref _int);
+            serializer.SerializeValue(ref _bool);
+        }
     }
 
         private NetworkVariable<MyCustomData> customNumber = new NetworkVariable<MyCustomData>(
