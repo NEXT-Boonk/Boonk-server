@@ -15,6 +15,7 @@ using System.Net.Sockets;
 
 public class NetworkManagerUI : MonoBehaviour
 {
+    // laver et felt til knapper i scriptet
     [SerializeField]private Button Server;
     [SerializeField]private Button Host;
     [SerializeField]private Button Client;
@@ -22,14 +23,18 @@ public class NetworkManagerUI : MonoBehaviour
 
     UnityTransport UT;
     string ip;
+    string port = "60000";
     
     //UnityTransport UT;
 
     private void Awake(){
         
-        UT = FindObjectOfType<UnityTransport>();
+        UT = FindObjectOfType<UnityTransport>(); // finder Unity Transport 
         //UT.ConnectionData.Address = "127.0.0.1";
         
+        // Lavet af dantheman213
+        //https://gist.github.com/dantheman213/db3118bed76199186acf7be87af0c1c4
+        // leder efter Ip'en for systemet for både Wi-fi eller Ethernet
         var interfaces = NetworkInterface.GetAllNetworkInterfaces();
             foreach (var adapter in interfaces.Where(x => x.OperationalStatus == OperationalStatus.Up))
             {
@@ -48,39 +53,50 @@ public class NetworkManagerUI : MonoBehaviour
                 }
             }
     
-        //UT.ConnectionData.Address = ip;
-
+        
+        //gør at programmet kan køres med et argument som -launch-as-server
         string[] args = System.Environment.GetCommandLineArgs();
         for(int i = 0; i < args.Length; i++) {
-            if(args[i] == "-launch-as-client"){
+            if(args[i] == "-launch-as-client"){ //køre programmet som en client
                 NetworkManager.Singleton.StartClient();
             }
-            else if(args[i] == "-launch-as-server"){
-                UT.ConnectionData.Port = UInt16.Parse("60000");
+            else if(args[i] == "-launch-as-server"){ //køre programmet som en server med local Ip'en af det netværk systemet er forbundet til med porten 60000
+                UT.ConnectionData.Port = UInt16.Parse(port);
                 UT.ConnectionData.Address = ip;
-                //UT.ConnectionData.port = "0";
                 NetworkManager.Singleton.StartServer();
+            }
+            else if(args[i] == "-launch-as-host"){ //køre programmet som en host med local Ip'en af det netværk systemet er forbundet til med porten 60000
+                UT.ConnectionData.Port = UInt16.Parse(port);
+                UT.ConnectionData.Address = ip;
+                NetworkManager.Singleton.StartHost();
             }
             
             
         }
 
-        Server.onClick.AddListener(() => {
+        Server.onClick.AddListener(() => {  // gør at når man trykker på knappen "Server" starter programet en server 
             NetworkManager.Singleton.StartServer();
         });
-        Host.onClick.AddListener(() => {
+        Host.onClick.AddListener(() => { // gør at når man trykker på knappen "Host" starter programet en host 
             NetworkManager.Singleton.StartHost();
         });
-        Client.onClick.AddListener(() => {
+        Client.onClick.AddListener(() => { // gør at når man trykker på knappen "Client" starter programet en client 
             NetworkManager.Singleton.StartClient();
         });
-        Disconnect.onClick.AddListener(() => {
+        Disconnect.onClick.AddListener(() => { // gør at når man trykker på knappen "Disconnect" lukker programmet for sin instance af en client, host eller server
            NetworkManager.Singleton.Shutdown();
         });
 
       
     }
 
-    
+    void Start(){
+        // sender Ip'en og porten til console logen og error logen i dev-buildet
+        Debug.Log("Ip:" + UT.ConnectionData.Address + " Port:" + UT.ConnectionData.Port);
+        Debug.LogError("Ip:" + UT.ConnectionData.Address + " Port:" + UT.ConnectionData.Port);
+
+    }
 
 }
+
+

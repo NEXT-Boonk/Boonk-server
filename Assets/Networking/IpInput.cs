@@ -13,7 +13,7 @@ public class IpInput : MonoBehaviour
 {
     
     //public UnityTransport placeholderName;
-    [SerializeField]private TMP_InputField Ip;
+    [SerializeField]private TMP_InputField Ip; // laver et felt i Scriptet for et Input field(text mesh pro)
     [SerializeField]private TMP_InputField Port;
     private string Input;
     UnityTransport UT;
@@ -22,40 +22,24 @@ public class IpInput : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        UT = GetComponent<UnityTransport>();
-        Port.characterLimit = 5;
-        Port.contentType = TMP_InputField.ContentType.IntegerNumber;
-        Port.characterValidation = TMP_InputField.CharacterValidation.Alphanumeric;
+        UT = GetComponent<UnityTransport>(); // finder UnityTransport
+        Port.characterLimit = 5; // gør at input feltet "Port" har en char limit på 5 
+        Port.contentType = TMP_InputField.ContentType.IntegerNumber; // gør at input feltet "Port" kun kan bruge Integers
+        Port.characterValidation = TMP_InputField.CharacterValidation.Alphanumeric; // gør at input feltet "Port" kun kan accepterer Integers
         
-        //Ip1 =  GameObject.Find("Ip").GetComponent<TMP_InputField>();
-        //Port1 =  GameObject.Find("Port").GetComponent<TMP_InputField>();
-        //textField = FindObjectOfType<TMP_InputField>();
 
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-
         
-        
-       }
-       
-       // UT.ConnectionData.Port = Port.text;
-      //if (Input.GetKey(KeyCode.G)) UT.connectionData.Address = "10.78.64.202";
-        
-    
-
     public void InputIp(){
 
-        UT.ConnectionData.Address = Ip.text;
+        UT.ConnectionData.Address = Ip.text; //sætter stringen i Inputfeltet "Ip" til Ip adressen programmet bruger
         
     }
     
     public void InputPort(){
     if(Port.text.Length > 0 && Port.text.Length <= 4){
-        UT.ConnectionData.Port = UInt16.Parse(Port.text);
-
+        UT.ConnectionData.Port = UInt16.Parse(Port.text); //sætter stringen i Inputfeltet "Port" og parser den til en UInt16 som programmet bruger
+        
     }
 }
 }
