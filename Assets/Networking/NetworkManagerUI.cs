@@ -16,10 +16,10 @@ using System.Net.Sockets;
 public class NetworkManagerUI : MonoBehaviour
 {
     // laver et felt til knapper i scriptet
-    [SerializeField]private Button Server;
-    [SerializeField]private Button Host;
-    [SerializeField]private Button Client;
-    [SerializeField]private Button Disconnect;
+    [SerializeField]private Button server;
+    [SerializeField]private Button host;
+    [SerializeField]private Button client;
+    [SerializeField]private Button disconnect;
 
     UnityTransport UT;
     string ip;
@@ -74,16 +74,16 @@ public class NetworkManagerUI : MonoBehaviour
             
         }
 
-        Server.onClick.AddListener(() => {  // gør at når man trykker på knappen "Server" starter programet en server 
+        server.onClick.AddListener(() => {  // gør at når man trykker på knappen "Server" starter programet en server 
             NetworkManager.Singleton.StartServer();
         });
-        Host.onClick.AddListener(() => { // gør at når man trykker på knappen "Host" starter programet en host 
+        host.onClick.AddListener(() => { // gør at når man trykker på knappen "Host" starter programet en host 
             NetworkManager.Singleton.StartHost();
         });
-        Client.onClick.AddListener(() => { // gør at når man trykker på knappen "Client" starter programet en client 
+        client.onClick.AddListener(() => { // gør at når man trykker på knappen "Client" starter programet en client 
             NetworkManager.Singleton.StartClient();
         });
-        Disconnect.onClick.AddListener(() => { // gør at når man trykker på knappen "Disconnect" lukker programmet for sin instance af en client, host eller server
+        disconnect.onClick.AddListener(() => { // gør at når man trykker på knappen "Disconnect" lukker programmet for sin instance af en client, host eller server
            NetworkManager.Singleton.Shutdown();
         });
 
