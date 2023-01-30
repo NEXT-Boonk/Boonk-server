@@ -15,15 +15,16 @@ using System.Net.Sockets;
 
 public class NetworkManagerUI : MonoBehaviour
 {
-    // laver et felt til knapper i scriptet
+    // makes a field in the Unity editor for the Buttons
     [SerializeField]private Button server;
     [SerializeField]private Button host;
     [SerializeField]private Button client;
     [SerializeField]private Button disconnect;
 
+    // Deifining Unity transport
     UnityTransport UT;
     string ip;
-    string port = "60000";
+    string port = "9999";
     
     //UnityTransport UT;
 
@@ -90,7 +91,7 @@ public class NetworkManagerUI : MonoBehaviour
       
     }
 
-    void Start(){
+    void Update(){
         // sender Ip'en og porten til console logen og error logen i dev-buildet
         Debug.Log("Ip:" + UT.ConnectionData.Address + " Port:" + UT.ConnectionData.Port);
         Debug.LogError("Ip:" + UT.ConnectionData.Address + " Port:" + UT.ConnectionData.Port);
