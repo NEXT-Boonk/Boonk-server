@@ -7,10 +7,13 @@ using UnityEngine.UI;
 public class PlayerNetwork : NetworkBehaviour
 {
 
+/*This is a variable that is sent over the network, to change the type of variable, you can change the "int" to "float", "ensum", "bool", "struct". All value types, refrence type variables are not able to used with this.
+https://www.youtube.com/watch?v=3yuBOB3VrCk&t=1487s&ab_channel=CodeMonkey
+"NetworkVariableWritePermission.Owner" means that the client is able to change the variable, change this to server*/
     private NetworkVariable<int> randomNumber = new NetworkVariable<int>(1, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
 
-//Dette er en struct, den minder om en class, men er det ikke
+//This is a struct, a refrence variable, not definable using the method above
     public struct MyCustomData: INetworkSerializable {
         public int _int;
         public bool _bool;
@@ -21,19 +24,25 @@ public class PlayerNetwork : NetworkBehaviour
         }
     }
 
+
+        /*This method can be used to define refrence variables, refrence variables are variables like "class", "Object", "array" and "string" 
+        among others. To refrence one of these, replace MyCustomData with the name of the refrence type one has already defined above.
+        */
         private NetworkVariable<MyCustomData> customNumber = new NetworkVariable<MyCustomData>(
         new MyCustomData{
             _int = 51,
             _bool = true,
         }, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
-/*Denne del af koden vil kun sende det tilfældige nummer når nummeret ændrer sig, i stedet for hele tiden
-    public override void OnNetworkSpawn() {
+        /*This kode will send a random number when the value changes, not at all times, given the "OnValueChanged" part of the code
+        public override void OnNetworkSpawn() {
         randomNumber.OnValueChanged += (int previousValue, int newValue) => {
             Debug.Log(OwnerClientId + "number: " + randomNumber.Value);
         };
     }
     */
+
+    //This will send the struct defined above when one of it's values changes
     public override void OnNetworkSpawn() {
         customNumber.OnValueChanged += (MyCustomData previousValue, MyCustomData newValue) => {
         Debug.Log(OwnerClientId + "; " + newValue._int + " and it's " + newValue._bool);
@@ -41,20 +50,22 @@ public class PlayerNetwork : NetworkBehaviour
         };
     }
 
+
+    
     private void Update() {
-        if(!IsOwner) return;
-        Debug.Log(OwnerClientId + "number: " + randomNumber.Value);
+        if(!IsOwner) return; //This checks if the code is not run by the player, if so it does nothing.
+        Debug.Log(OwnerClientId + "number: " + randomNumber.Value); //this code sends the command of the random number, which is sent at all times
 
 
         if(Input.GetKeyDown(KeyCode.T)){
-            randomNumber.Value = Random.Range(0,100);
+            randomNumber.Value = Random.Range(0,100); //changes the random number
         }
         if(Input.GetKeyDown(KeyCode.Y)){
             if(customNumber.Value._int == 51){
             customNumber.Value = new MyCustomData{
                 _int = 10,
                 _bool = false,
-            };
+            }; //sets a new struct
             } else {
             customNumber.Value = new MyCustomData{
                 _int = 51,
@@ -63,10 +74,8 @@ public class PlayerNetwork : NetworkBehaviour
 
             }
         }
-
+        //The code below creates a simple movement system
         Vector3 moveDir = new Vector3(0,0,0);
-
-
         if (Input.GetKey(KeyCode.W)) moveDir.z = +1f;
         if (Input.GetKey(KeyCode.S)) moveDir.z = -1f;
         if (Input.GetKey(KeyCode.A)) moveDir.x = -1f;
