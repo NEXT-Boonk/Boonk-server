@@ -35,6 +35,5 @@ public class IpInput : MonoBehaviour
     public void InputPort(){
    
         UT.ConnectionData.Port = UInt16.Parse(port.text); //sets the Port to a 5 digit number        
-
-}
+    }
 }
