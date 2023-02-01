@@ -30,12 +30,12 @@ public class NetworkManagerUI : MonoBehaviour
 
     private void Awake(){
         
-        UT = FindObjectOfType<UnityTransport>(); // finder Unity Transport 
+        UT = FindObjectOfType<UnityTransport>(); // finds the object UnityTransport 
         //UT.ConnectionData.Address = "127.0.0.1";
         
-        // Lavet af dantheman213
-        //https://gist.github.com/dantheman213/db3118bed76199186acf7be87af0c1c4
-        // leder efter Ip'en for systemet for både Wi-fi eller Ethernet
+        // Made by dantheman213
+        // https://gist.github.com/dantheman213/db3118bed76199186acf7be87af0c1c4
+        // searches after an Ip from an avalibe Wi-fi eller Ethernet
         var interfaces = NetworkInterface.GetAllNetworkInterfaces();
             foreach (var adapter in interfaces.Where(x => x.OperationalStatus == OperationalStatus.Up))
             {
@@ -55,18 +55,26 @@ public class NetworkManagerUI : MonoBehaviour
             }
     
         
-        //gør at programmet kan køres med et argument som -launch-as-server
+        
         string[] args = System.Environment.GetCommandLineArgs();
         for(int i = 0; i < args.Length; i++) {
-            if(args[i] == "-launch-as-client"){ //køre programmet som en client
+            if(args[i] == "-launch-as-client"){ // runs the game as a client 
                 NetworkManager.Singleton.StartClient();
             }
-            else if(args[i] == "-launch-as-server"){ //køre programmet som en server med local Ip'en af det netværk systemet er forbundet til med porten 60000
+            /*
+            runs the game as a server
+            with the Ip of the local nertwork and a hard coded port
+            */
+            else if(args[i] == "-launch-as-server"){ 
                 UT.ConnectionData.Port = UInt16.Parse(port);
                 UT.ConnectionData.Address = ip;
                 NetworkManager.Singleton.StartServer();
             }
-            else if(args[i] == "-launch-as-host"){ //køre programmet som en host med local Ip'en af det netværk systemet er forbundet til med porten 60000
+            /*
+            runs the game as a server
+            with the Ip of the local nertwork and a hard coded port
+            */
+            else if(args[i] == "-launch-as-host"){
                 UT.ConnectionData.Port = UInt16.Parse(port);
                 UT.ConnectionData.Address = ip;
                 NetworkManager.Singleton.StartHost();
@@ -75,16 +83,16 @@ public class NetworkManagerUI : MonoBehaviour
             
         }
 
-        server.onClick.AddListener(() => {  // gør at når man trykker på knappen "Server" starter programet en server 
+        server.onClick.AddListener(() => {  // when cliced starts a server
             NetworkManager.Singleton.StartServer();
         });
-        host.onClick.AddListener(() => { // gør at når man trykker på knappen "Host" starter programet en host 
+        host.onClick.AddListener(() => { // when cliced starts a host 
             NetworkManager.Singleton.StartHost();
         });
-        client.onClick.AddListener(() => { // gør at når man trykker på knappen "Client" starter programet en client 
+        client.onClick.AddListener(() => { // when cliced starts a client
             NetworkManager.Singleton.StartClient();
         });
-        disconnect.onClick.AddListener(() => { // gør at når man trykker på knappen "Disconnect" lukker programmet for sin instance af en client, host eller server
+        disconnect.onClick.AddListener(() => { // when cliced starts shuts down server, host or client
            NetworkManager.Singleton.Shutdown();
         });
 
@@ -92,10 +100,8 @@ public class NetworkManagerUI : MonoBehaviour
     }
 
     void Update(){
-        // sender Ip'en og porten til console logen og error logen i dev-buildet
+        // prints the Ip and Port in the console
         Debug.Log("Ip:" + UT.ConnectionData.Address + " Port:" + UT.ConnectionData.Port);
-        Debug.LogError("Ip:" + UT.ConnectionData.Address + " Port:" + UT.ConnectionData.Port);
-
     }
 
 }

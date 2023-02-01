@@ -620,8 +620,8 @@ MonoBehaviour:
   m_MaxConnectAttempts: 60
   m_DisconnectTimeoutMS: 30000
   ConnectionData:
-    Address: 127.0.0.1
-    Port: 1234
+    Address: 
+    Port: 0
     ServerListenAddress: 0.0.0.0
   DebugSimulator:
     PacketDelayMS: 0
@@ -693,8 +693,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481b4caff8224a748a0eb4e15d05612f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Ip: {fileID: 1803050599}
-  Port: {fileID: 1343129822}
+  ip: {fileID: 1803050599}
+  port: {fileID: 1343129822}
 --- !u!1 &425596763
 GameObject:
   m_ObjectHideFlags: 0
