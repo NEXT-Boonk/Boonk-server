@@ -48,7 +48,7 @@ public class NetworkManagerUI : MonoBehaviour
 	    }
     
         
-        //gør at programmet kan køres med et argument som -launch-as-server
+        
         string[] args = System.Environment.GetCommandLineArgs();
 
         for(int i = 0; i < args.Length; i++) {
@@ -67,21 +67,27 @@ public class NetworkManagerUI : MonoBehaviour
             }
         }
 
-        server.onClick.AddListener(() => {  // gør at når man trykker på knappen "Server" starter programet en server 
+        server.onClick.AddListener(() => {  // when cliced starts a server
             NetworkManager.Singleton.StartServer();
         });
-        host.onClick.AddListener(() => { // gør at når man trykker på knappen "Host" starter programet en host 
+        host.onClick.AddListener(() => { // when cliced starts a host 
             NetworkManager.Singleton.StartHost();
         });
-        client.onClick.AddListener(() => { // gør at når man trykker på knappen "Client" starter programet en client 
+        client.onClick.AddListener(() => { // when cliced starts a client
             NetworkManager.Singleton.StartClient();
         });
-        disconnect.onClick.AddListener(() => { // gør at når man trykker på knappen "Disconnect" lukker programmet for sin instance af en client, host eller server
+        disconnect.onClick.AddListener(() => { // when cliced starts shuts down server, host or client
            NetworkManager.Singleton.Shutdown();
         });
 
       
     }
+
+    void Update(){
+        // prints the Ip and Port in the console
+        Debug.Log("Ip:" + UT.ConnectionData.Address + " Port:" + UT.ConnectionData.Port);
+    }
+
 }
 
 

@@ -620,8 +620,8 @@ MonoBehaviour:
   m_MaxConnectAttempts: 60
   m_DisconnectTimeoutMS: 30000
   ConnectionData:
-    Address: 127.0.0.1
-    Port: 1234
+    Address: 
+    Port: 0
     ServerListenAddress: 0.0.0.0
   DebugSimulator:
     PacketDelayMS: 0

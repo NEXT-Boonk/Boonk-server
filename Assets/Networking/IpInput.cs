@@ -27,11 +27,13 @@ public class IpInput : MonoBehaviour
     }
         
     public void InputIp(){
+
         UT.ConnectionData.Address = ip.text; //sets the Ip to the string in the input field
+        
     }
     
     public void InputPort(){
-        UT.ConnectionData.Port = UInt16.Parse(port.text); //sets the Port to a 4 digit number        
-        Debug.Log("Ip:" + UT.ConnectionData.Address + " Port:" + UT.ConnectionData.Port);
-    }
+   
+        UT.ConnectionData.Port = UInt16.Parse(port.text); //sets the Port to a 5 digit number        
+
 }
