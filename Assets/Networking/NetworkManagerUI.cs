@@ -47,7 +47,7 @@ public class NetworkManagerUI : MonoBehaviour
                     {
                        
                         ip = result.Address.ToString();
-                        Debug.Log("IP Address:" + ip);
+                        //Debug.Log("IP Address:" + ip);
                         
 
                     }
@@ -101,7 +101,7 @@ public class NetworkManagerUI : MonoBehaviour
 
     void Update(){
         // prints the Ip and Port in the console
-        Debug.Log("Ip:" + UT.ConnectionData.Address + " Port:" + UT.ConnectionData.Port);
+        //Debug.Log("Ip:" + UT.ConnectionData.Address + " Port:" + UT.ConnectionData.Port);
     }
 
 }
