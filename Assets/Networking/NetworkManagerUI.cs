@@ -6,6 +6,8 @@ using Unity.Netcode.Transports.UTP;
 using System; 
 using System.Linq;
 using System.Net.Sockets;
+using System.Collections;
+using System.Collections.Generic;
 
 
 
@@ -28,11 +30,12 @@ public class NetworkManagerUI : MonoBehaviour
 
     private void Awake(){
         
-        UT = FindObjectOfType<UnityTransport>(); // finder Unity Transport 
+        UT = FindObjectOfType<UnityTransport>(); // finds the object UnityTransport 
+        //UT.ConnectionData.Address = "127.0.0.1";
         
-        // Lavet af dantheman213
+        // Made by dantheman213
         // https://gist.github.com/dantheman213/db3118bed76199186acf7be87af0c1c4
-        // leder efter Ip'en for systemet for både Wi-fi eller Ethernet
+        // searches after an Ip from an avalibe Wi-fi eller Ethernet
         NetworkInterface[] interfaces = NetworkInterface.GetAllNetworkInterfaces();
 
 		foreach (NetworkInterface adapter in interfaces.Where(x => x.OperationalStatus == OperationalStatus.Up)) {
@@ -52,10 +55,15 @@ public class NetworkManagerUI : MonoBehaviour
         string[] args = System.Environment.GetCommandLineArgs();
 
         for(int i = 0; i < args.Length; i++) {
-            if(args[i] == "--launch-as-client") { //køre programmet som en client
+            
+            if(args[i] == "--launch-as-client") { // runs the game as a client 
                 NetworkManager.Singleton.StartClient();
             }
-            else if(args[i] == "--launch-as-server") { //køre programmet som en server med local Ip'en af det netværk systemet er forbundet til med porten 60000
+             /*
+            runs the game as a server
+            with the Ip of the local nertwork and a hard coded port
+            */
+            else if(args[i] == "--launch-as-server") { 
                 UT.ConnectionData.Port = UInt16.Parse(port);
                 UT.ConnectionData.Address = ip;
                 NetworkManager.Singleton.StartServer();
@@ -85,7 +93,7 @@ public class NetworkManagerUI : MonoBehaviour
 
     void Update(){
         // prints the Ip and Port in the console
-        Debug.Log("Ip:" + UT.ConnectionData.Address + " Port:" + UT.ConnectionData.Port);
+        //Debug.Log("Ip:" + UT.ConnectionData.Address + " Port:" + UT.ConnectionData.Port);
     }
 
 }
