@@ -24,9 +24,9 @@ public class NetworkManagerUI : MonoBehaviour
     // Deifining Unity transport
     UnityTransport UT;
     string ip;
-    string port = "9999";
+    string port = "60000";
     
-    //UnityTransport UT;
+
 
     private void Awake(){
         

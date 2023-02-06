@@ -7,11 +7,16 @@ using UnityEngine.UI;
 public class PlayerNetwork : NetworkBehaviour
 {
 
+Material teamColor;
+[SerializeField]private Material team1;
+[SerializeField]private Material team2;
+    
+
 /*This is a variable that is sent over the network, to change the type of variable, you can change the "int" to "float", "ensum", "bool", "struct". All value types, refrence type variables are not able to used with this.
 https://www.youtube.com/watch?v=3yuBOB3VrCk&t=1487s&ab_channel=CodeMonkey
 "NetworkVariableWritePermission.Owner" means that the client is able to change the variable, change this to server*/
     private NetworkVariable<int> randomNumber = new NetworkVariable<int>(1, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
-
+//    private NetworkVariable<bool> team = new NetworkVariable<bool>(1, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
 //This is a struct, a refrence variable, not definable using the method above
     public struct MyCustomData: INetworkSerializable {
@@ -34,7 +39,7 @@ https://www.youtube.com/watch?v=3yuBOB3VrCk&t=1487s&ab_channel=CodeMonkey
             _bool = true,
         }, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
-        /*This kode will send a random number when the value changes, not at all times, given the "OnValueChanged" part of the code
+        /*This code will send a random number when the value changes, not at all times, given the "OnValueChanged" part of the code
         public override void OnNetworkSpawn() {
         randomNumber.OnValueChanged += (int previousValue, int newValue) => {
             Debug.Log(OwnerClientId + "number: " + randomNumber.Value);
@@ -48,6 +53,8 @@ https://www.youtube.com/watch?v=3yuBOB3VrCk&t=1487s&ab_channel=CodeMonkey
         Debug.Log(OwnerClientId + "; " + newValue._int + " and it's " + newValue._bool);
 
         };
+
+    
     }
 
 
@@ -83,5 +90,13 @@ https://www.youtube.com/watch?v=3yuBOB3VrCk&t=1487s&ab_channel=CodeMonkey
 
         float moveSpeed = 3f;
         transform.position += moveDir * moveSpeed *Time.deltaTime;
+
+          if(Input.GetKeyDown(KeyCode.N)){
+            GetComponentInChildren<MeshRenderer>().material = team1;
+             }
+        else if(Input.GetKeyDown(KeyCode.M)){
+            GetComponentInChildren<MeshRenderer>().material = team2;
+        }
+
     }
 }
