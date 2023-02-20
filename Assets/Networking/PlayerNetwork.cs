@@ -79,6 +79,12 @@ https://www.youtube.com/watch?v=3yuBOB3VrCk&t=1487s&ab_channel=CodeMonkey
             testServerRpc(new ServerRpcParams());
         }
 
+        //This is connected to the clientrpc further down
+        if(Input.GetKeyDown(KeyCode.O)){
+            //thanks to the parameter we only run the function on the client with the id of 1
+            TestClientRpc(new ClientRpcParams {Send = new ClientRpcSendParams { TargetClientIds = new List<ulong>{1}}});
+        }
+
 
 
         
@@ -106,6 +112,17 @@ https://www.youtube.com/watch?v=3yuBOB3VrCk&t=1487s&ab_channel=CodeMonkey
     [ServerRpc]
     private void testServerRpc(ServerRpcParams Rpc){
         Debug.Log("server rpc working" + Rpc.Receive.SenderClientId);
+    }
+
+    /*
+    A clientRpc is a function that the server activates that is then run on the clients instead of the server, opposite of a serverRpc.
+    The parameter ClientRpcParams can be used to specifi a specific client to run the function on.
+    This would f.eks. allow the server to tell a player that they have died and run the death command on it.
+    */
+
+    [ClientRpc]
+    private void TestClientRpc(ClientRpcParams ClientRpcParams) {
+        Debug.Log("ClientRPC");
     }
 
 
