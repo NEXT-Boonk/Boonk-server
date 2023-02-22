@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Unity.Netcode;
@@ -8,6 +6,8 @@ using Unity.Netcode.Transports.UTP;
 using System; 
 using System.Linq;
 using System.Net.Sockets;
+using System.Collections;
+using System.Collections.Generic;
 
 
 
@@ -36,51 +36,43 @@ public class NetworkManagerUI : MonoBehaviour
         // Made by dantheman213
         // https://gist.github.com/dantheman213/db3118bed76199186acf7be87af0c1c4
         // searches after an Ip from an avalibe Wi-fi eller Ethernet
-        var interfaces = NetworkInterface.GetAllNetworkInterfaces();
-            foreach (var adapter in interfaces.Where(x => x.OperationalStatus == OperationalStatus.Up))
-            {
-                if (adapter.Name.ToLower() == "ethernet" || adapter.Name.ToLower() == "wi-fi")
-                {
-                    var props = adapter.GetIPProperties();
-                    var result = props.UnicastAddresses.FirstOrDefault(x => x.Address.AddressFamily == AddressFamily.InterNetwork);
-                    if (result != null)
-                    {
-                       
-                        ip = result.Address.ToString();
-                        Debug.Log("IP Address:" + ip);
-                        
+        NetworkInterface[] interfaces = NetworkInterface.GetAllNetworkInterfaces();
 
-                    }
-                }
-            }
+		foreach (NetworkInterface adapter in interfaces.Where(x => x.OperationalStatus == OperationalStatus.Up)) {
+			if (adapter.Name.ToLower() == "ethernet" || adapter.Name.ToLower() == "wi-fi") {
+
+			    IPInterfaceProperties props = adapter.GetIPProperties();
+			    UnicastIPAddressInformation result = props.UnicastAddresses.FirstOrDefault(x => x.Address.AddressFamily == AddressFamily.InterNetwork);
+
+			    if (result != null) {
+				    ip = result.Address.ToString();
+			    }
+			}
+	    }
     
         
         
         string[] args = System.Environment.GetCommandLineArgs();
+
         for(int i = 0; i < args.Length; i++) {
-            if(args[i] == "-launch-as-client"){ // runs the game as a client 
+            
+            if(args[i] == "--launch-as-client") { // runs the game as a client 
                 NetworkManager.Singleton.StartClient();
             }
-            /*
+             /*
             runs the game as a server
             with the Ip of the local nertwork and a hard coded port
             */
-            else if(args[i] == "-launch-as-server"){ 
+            else if(args[i] == "--launch-as-server") { 
                 UT.ConnectionData.Port = UInt16.Parse(port);
                 UT.ConnectionData.Address = ip;
                 NetworkManager.Singleton.StartServer();
             }
-            /*
-            runs the game as a server
-            with the Ip of the local nertwork and a hard coded port
-            */
-            else if(args[i] == "-launch-as-host"){
+            else if(args[i] == "--launch-as-host") { //køre programmet som en host med local Ip'en af det netværk systemet er forbundet til med porten 60000
                 UT.ConnectionData.Port = UInt16.Parse(port);
                 UT.ConnectionData.Address = ip;
                 NetworkManager.Singleton.StartHost();
             }
-            
-            
         }
 
         server.onClick.AddListener(() => {  // when cliced starts a server
@@ -101,7 +93,7 @@ public class NetworkManagerUI : MonoBehaviour
 
     void Update(){
         // prints the Ip and Port in the console
-        Debug.Log("Ip:" + UT.ConnectionData.Address + " Port:" + UT.ConnectionData.Port);
+        //Debug.Log("Ip:" + UT.ConnectionData.Address + " Port:" + UT.ConnectionData.Port);
     }
 
 }

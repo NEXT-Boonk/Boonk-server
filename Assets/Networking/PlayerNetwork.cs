@@ -61,7 +61,7 @@ https://www.youtube.com/watch?v=3yuBOB3VrCk&t=1487s&ab_channel=CodeMonkey
     
     private void Update() {
         if(!IsOwner) return; //This checks if the code is not run by the player, if so it does nothing.
-        Debug.Log(OwnerClientId + "number: " + randomNumber.Value); //this code sends the command of the random number, which is sent at all times
+        //Debug.Log(OwnerClientId + "number: " + randomNumber.Value); //this code sends the command of the random number, which is sent at all times
 
 
         if(Input.GetKeyDown(KeyCode.T)){
@@ -81,6 +81,21 @@ https://www.youtube.com/watch?v=3yuBOB3VrCk&t=1487s&ab_channel=CodeMonkey
 
             }
         }
+        //This code is connected to the code under the line "[ServerRpc]" further down
+        if(Input.GetKeyDown(KeyCode.U)){
+            testServerRpc(new ServerRpcParams());
+        }
+
+        //This is connected to the clientrpc further down
+        if(Input.GetKeyDown(KeyCode.O)){
+            //thanks to the parameter we only run the function on the client with the id of 1
+            TestClientRpc(new ClientRpcParams {Send = new ClientRpcSendParams { TargetClientIds = new List<ulong>{1}}});
+        }
+
+
+
+        
+
         //The code below creates a simple movement system
         Vector3 moveDir = new Vector3(0,0,0);
         if (Input.GetKey(KeyCode.W)) moveDir.z = +1f;
@@ -98,5 +113,30 @@ https://www.youtube.com/watch?v=3yuBOB3VrCk&t=1487s&ab_channel=CodeMonkey
             GetComponentInChildren<MeshRenderer>().material = team2;
         }
 
+    }
+
+
+    /*This is how to create a funktion that is run on the server, a serverRPC
+    Note that it won't be run on the local client, but instead be run on the server
+    If you wish to add parameters you will need to have them as value types, not refrence types
+
+    You can track which client sent the code to the server, by putting a parameter of "serverRpcParams parameter name", and calling 
+    Receive.SenderClientId, this gives you the id of the player sending the funktion, which could be used to identify where the effect should occur
+    Note that one has to put "[ServerRpc]" right above the code
+    */
+    [ServerRpc]
+    private void testServerRpc(ServerRpcParams Rpc){
+        Debug.Log("server rpc working" + Rpc.Receive.SenderClientId);
+    }
+
+    /*
+    A clientRpc is a function that the server activates that is then run on the clients instead of the server, opposite of a serverRpc.
+    The parameter ClientRpcParams can be used to specifi a specific client to run the function on.
+    This would f.eks. allow the server to tell a player that they have died and run the death command on it.
+    */
+
+    [ClientRpc]
+    private void TestClientRpc(ClientRpcParams ClientRpcParams) {
+        Debug.Log("ClientRPC");
     }
 }
