@@ -77,6 +77,10 @@ https://www.youtube.com/watch?v=3yuBOB3VrCk&t=1487s&ab_channel=CodeMonkey
 
     //This will send the struct defined above when one of it's values changes
     public override void OnNetworkSpawn() {
+        if (IsServer)
+        {
+            TeamHandler.instance.AddPlayer(this);
+        }
 
         GetComponentInChildren<MeshRenderer>().material.color = playerColor.Value;
         playerColor.OnValueChanged += UpdateColor;
