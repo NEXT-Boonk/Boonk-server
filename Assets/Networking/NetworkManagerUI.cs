@@ -18,14 +18,18 @@ public class NetworkManagerUI : MonoBehaviour
     [SerializeField]private Button client;
     [SerializeField]private Button disconnect;
 
+    
+
     // Deifining Unity transport
     UnityTransport UT;
     string ip;
     string port = "60000";
+    public List<GameObject> playersList;
     
 
 
     private void Awake(){
+        playersList = new List<GameObject>();
         
         UT = FindObjectOfType<UnityTransport>(); // finds the object UnityTransport 
         //UT.ConnectionData.Address = "127.0.0.1";

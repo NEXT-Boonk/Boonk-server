@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.18028305, g: 0.22571313, b: 0.3069213, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -593,6 +593,7 @@ GameObject:
   - component: {fileID: 410383518}
   - component: {fileID: 410383517}
   - component: {fileID: 410383520}
+  - component: {fileID: 410383521}
   m_Layer: 0
   m_Name: NetworkManager
   m_TagString: Untagged
@@ -695,6 +696,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ip: {fileID: 1803050599}
   port: {fileID: 1343129822}
+--- !u!114 &410383521
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 410383516}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2d940707d883a5479fadf03a8951924, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  teamA: []
+  teamB: []
 --- !u!1 &425596763
 GameObject:
   m_ObjectHideFlags: 0
@@ -2681,6 +2696,7 @@ MonoBehaviour:
   host: {fileID: 1001642903}
   client: {fileID: 1052953601}
   disconnect: {fileID: 1357438083}
+  playersList: []
 --- !u!1 &1803050597
 GameObject:
   m_ObjectHideFlags: 0

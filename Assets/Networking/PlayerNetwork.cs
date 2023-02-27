@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
+
 public class PlayerNetwork : NetworkBehaviour
 {
 
@@ -12,19 +13,38 @@ Material teamColor;
 [SerializeField]private Material team1;
 [SerializeField]private Material team2;
 
-public GameObject[] players;
+    private NetworkVariable<Color> playerColor = new NetworkVariable<Color>();
 
-public List<GameObject> playersList = new List<GameObject>();
+    private int team;
+
+    public Color GetPlayerColor()
+    {
+        return playerColor.Value;
+    }
+
+    public void SetColor(Color c)
+    {
+        playerColor.Value = c;
+    }
+
+    public int GetTeam()
+    {
+        return team;
+    }
+
+    public void SetTeam(int newTeam)
+    {
+        if (!IsServer) return;
+
+        team = newTeam;
+    }
 
 /*This is a variable that is sent over the network, to change the type of variable, you can change the "int" to "float", "ensum", "bool", "struct". All value types, refrence type variables are not able to used with this.
 https://www.youtube.com/watch?v=3yuBOB3VrCk&t=1487s&ab_channel=CodeMonkey
 "NetworkVariableWritePermission.Owner" means that the client is able to change the variable, change this to server*/
     private NetworkVariable<int> randomNumber = new NetworkVariable<int>(1, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
-    private NetworkVariable<bool> team = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
     
-    
-    
-
+   
 //This is a struct, a refrence variable, not definable using the method above
     public struct MyCustomData: INetworkSerializable {
         public int _int;
@@ -35,6 +55,7 @@ https://www.youtube.com/watch?v=3yuBOB3VrCk&t=1487s&ab_channel=CodeMonkey
             serializer.SerializeValue(ref _bool);
         }
     }
+    
 
 
         /*This method can be used to define refrence variables, refrence variables are variables like "class", "Object", "array" and "string" 
@@ -56,21 +77,24 @@ https://www.youtube.com/watch?v=3yuBOB3VrCk&t=1487s&ab_channel=CodeMonkey
 
     //This will send the struct defined above when one of it's values changes
     public override void OnNetworkSpawn() {
-        if(IsOwner){ playerAddServerRpc(new ServerRpcParams()); }
 
-        if(team.Value){
-            GetComponentInChildren<MeshRenderer>().material = team1;
-        }
-        else{
-           GetComponentInChildren<MeshRenderer>().material = team2; 
-        }
+        GetComponentInChildren<MeshRenderer>().material.color = playerColor.Value;
+        playerColor.OnValueChanged += UpdateColor;
+
+
         customNumber.OnValueChanged += (MyCustomData previousValue, MyCustomData newValue) => {
         Debug.Log(OwnerClientId + "; " + newValue._int + " and it's " + newValue._bool);
         };
     }
 
+    private void UpdateColor(Color oldvalue, Color newValue)
+    {
+          GetComponentInChildren<MeshRenderer>().material.color = newValue;
+    }
+
     public override void OnNetworkDespawn() {
-        if(IsOwner){ playerRemoveServerRpc(new ServerRpcParams()); }
+        TeamHandler.instance.RemovePlayer(this);
+
 
     }
 
@@ -79,7 +103,12 @@ https://www.youtube.com/watch?v=3yuBOB3VrCk&t=1487s&ab_channel=CodeMonkey
         if(!IsOwner) return; //This checks if the code is not run by the player, if so it does nothing.
         //Debug.Log(OwnerClientId + "number: " + randomNumber.Value); //this code sends the command of the random number, which is sent at all times
 
-        
+
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            RequestChangeTeam_ServerRpc();
+        }
+
 
         if(Input.GetKeyDown(KeyCode.T)){
             randomNumber.Value = Random.Range(0,100); //changes the random number
@@ -109,10 +138,6 @@ https://www.youtube.com/watch?v=3yuBOB3VrCk&t=1487s&ab_channel=CodeMonkey
             TestClientRpc(new ClientRpcParams {Send = new ClientRpcSendParams { TargetClientIds = new List<ulong>{1}}});
         }
 
-
-
-        
-
         //The code below creates a simple movement system
         Vector3 moveDir = new Vector3(0,0,0);
         if (Input.GetKey(KeyCode.W)) moveDir.z = +1f;
@@ -123,20 +148,11 @@ https://www.youtube.com/watch?v=3yuBOB3VrCk&t=1487s&ab_channel=CodeMonkey
         float moveSpeed = 3f;
         transform.position += moveDir * moveSpeed *Time.deltaTime;
 
-          if(Input.GetKeyDown(KeyCode.N)){
-            //changeTeamServerRpc(new ServerRpcParams());
-            GetComponentInChildren<MeshRenderer>().material = team1;
-             }
-        else if(Input.GetKeyDown(KeyCode.M)){
-            GetComponentInChildren<MeshRenderer>().material = team2;
-        }
 
     }
 
    
-
-
-    /*This is how to create a funktion that is run on the server, a serverRPC
+    /*This is how to create a function that is run on the server, a serverRPC
     Note that it won't be run on the local client, but instead be run on the server
     If you wish to add parameters you will need to have them as value types, not refrence types
 
@@ -144,32 +160,19 @@ https://www.youtube.com/watch?v=3yuBOB3VrCk&t=1487s&ab_channel=CodeMonkey
     Receive.SenderClientId, this gives you the id of the player sending the funktion, which could be used to identify where the effect should occur
     Note that one has to put "[ServerRpc]" right above the code
     */
+
     [ServerRpc]
     private void testServerRpc(ServerRpcParams Rpc){
         Debug.Log("server rpc working" + Rpc.Receive.SenderClientId);
     }
 
     [ServerRpc]
-    private void playerAddServerRpc(ServerRpcParams Rpc) {
-        players = GameObject.FindGameObjectsWithTag("Player");
-        for(int i = 0; i < players.Length; i++) {
-            if(players[i].GetComponent<NetworkObject>().OwnerClientId == Rpc.Receive.SenderClientId){
-                Debug.Log(playersList.Count);
-                playersList.Add(players[i]);
-            }      
-        }
+    private void RequestChangeTeam_ServerRpc()
+    {
+        TeamHandler.instance.ChangeTeam(this);
     }
 
-    [ServerRpc]
-    private void playerRemoveServerRpc(ServerRpcParams Rpc) {
-        players = GameObject.FindGameObjectsWithTag("Player");
-        for(int i = 0; i < players.Length; i++) {
-            if(players[i].GetComponent<NetworkObject>().OwnerClientId == Rpc.Receive.SenderClientId){
-                Debug.Log(playersList.Count);
-                playersList.Remove(players[i]);
-            }      
-        }
-    }
+    
 /*
         players = GameObject.FindGameObjectsWithTag("Player");
         //Debug.Log(players.Length);
