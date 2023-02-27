@@ -4,19 +4,26 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 public class PlayerNetwork : NetworkBehaviour
 {
 
 Material teamColor;
 [SerializeField]private Material team1;
 [SerializeField]private Material team2;
-    
+
+public GameObject[] players;
+
+public List<GameObject> playersList = new List<GameObject>();
 
 /*This is a variable that is sent over the network, to change the type of variable, you can change the "int" to "float", "ensum", "bool", "struct". All value types, refrence type variables are not able to used with this.
 https://www.youtube.com/watch?v=3yuBOB3VrCk&t=1487s&ab_channel=CodeMonkey
 "NetworkVariableWritePermission.Owner" means that the client is able to change the variable, change this to server*/
     private NetworkVariable<int> randomNumber = new NetworkVariable<int>(1, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
-//    private NetworkVariable<bool> team = new NetworkVariable<bool>(1, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    private NetworkVariable<bool> team = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    
+    
+    
 
 //This is a struct, a refrence variable, not definable using the method above
     public struct MyCustomData: INetworkSerializable {
@@ -49,20 +56,30 @@ https://www.youtube.com/watch?v=3yuBOB3VrCk&t=1487s&ab_channel=CodeMonkey
 
     //This will send the struct defined above when one of it's values changes
     public override void OnNetworkSpawn() {
+        if(IsOwner){ playerAddServerRpc(new ServerRpcParams()); }
+
+        if(team.Value){
+            GetComponentInChildren<MeshRenderer>().material = team1;
+        }
+        else{
+           GetComponentInChildren<MeshRenderer>().material = team2; 
+        }
         customNumber.OnValueChanged += (MyCustomData previousValue, MyCustomData newValue) => {
         Debug.Log(OwnerClientId + "; " + newValue._int + " and it's " + newValue._bool);
-
         };
+    }
 
-    
+    public override void OnNetworkDespawn() {
+        if(IsOwner){ playerRemoveServerRpc(new ServerRpcParams()); }
+
     }
 
 
-    
     private void Update() {
         if(!IsOwner) return; //This checks if the code is not run by the player, if so it does nothing.
         //Debug.Log(OwnerClientId + "number: " + randomNumber.Value); //this code sends the command of the random number, which is sent at all times
 
+        
 
         if(Input.GetKeyDown(KeyCode.T)){
             randomNumber.Value = Random.Range(0,100); //changes the random number
@@ -107,6 +124,7 @@ https://www.youtube.com/watch?v=3yuBOB3VrCk&t=1487s&ab_channel=CodeMonkey
         transform.position += moveDir * moveSpeed *Time.deltaTime;
 
           if(Input.GetKeyDown(KeyCode.N)){
+            //changeTeamServerRpc(new ServerRpcParams());
             GetComponentInChildren<MeshRenderer>().material = team1;
              }
         else if(Input.GetKeyDown(KeyCode.M)){
@@ -114,6 +132,8 @@ https://www.youtube.com/watch?v=3yuBOB3VrCk&t=1487s&ab_channel=CodeMonkey
         }
 
     }
+
+   
 
 
     /*This is how to create a funktion that is run on the server, a serverRPC
@@ -129,6 +149,35 @@ https://www.youtube.com/watch?v=3yuBOB3VrCk&t=1487s&ab_channel=CodeMonkey
         Debug.Log("server rpc working" + Rpc.Receive.SenderClientId);
     }
 
+    [ServerRpc]
+    private void playerAddServerRpc(ServerRpcParams Rpc) {
+        players = GameObject.FindGameObjectsWithTag("Player");
+        for(int i = 0; i < players.Length; i++) {
+            if(players[i].GetComponent<NetworkObject>().OwnerClientId == Rpc.Receive.SenderClientId){
+                Debug.Log(playersList.Count);
+                playersList.Add(players[i]);
+            }      
+        }
+    }
+
+    [ServerRpc]
+    private void playerRemoveServerRpc(ServerRpcParams Rpc) {
+        players = GameObject.FindGameObjectsWithTag("Player");
+        for(int i = 0; i < players.Length; i++) {
+            if(players[i].GetComponent<NetworkObject>().OwnerClientId == Rpc.Receive.SenderClientId){
+                Debug.Log(playersList.Count);
+                playersList.Remove(players[i]);
+            }      
+        }
+    }
+/*
+        players = GameObject.FindGameObjectsWithTag("Player");
+        //Debug.Log(players.Length);
+        Debug.Log(players[0].GetComponent<NetworkObject>().OwnerClientId);
+        Debug.Log(GetComponentInChildren<NetworkObject>().OwnerClientId);
+        Debug.Log("id lenght" + activePlayerIds.Length + ", player lenght" + players.Length);
+        */
+        //Rpc.Receive.SenderClientId
     /*
     A clientRpc is a function that the server activates that is then run on the clients instead of the server, opposite of a serverRpc.
     The parameter ClientRpcParams can be used to specifi a specific client to run the function on.
@@ -137,6 +186,11 @@ https://www.youtube.com/watch?v=3yuBOB3VrCk&t=1487s&ab_channel=CodeMonkey
 
     [ClientRpc]
     private void TestClientRpc(ClientRpcParams ClientRpcParams) {
+        Debug.Log("ClientRPC");
+    }
+
+    [ClientRpc]
+    private void showTeamClientRpc() {
         Debug.Log("ClientRPC");
     }
 }
